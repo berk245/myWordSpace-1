@@ -18,7 +18,6 @@
         
         <div class="question" v-for="(question, index) in exerciseQuestions" :key="question.id">
             <p> {{ question.english }} </p>
-            <input type="text" value="artikel" v-if="question.type == 'noun'">
             <input type="text" placeholder="Deutsch Übersetzung" v-model="userAnswers[index]" :class="{correct : userAnswers[index] == question.german}">    
         </div>
       </div>
@@ -53,11 +52,36 @@ export default {
         this.message = '';
         this.exerciseQuestions = [];
         //Check if the amount is more than the number of words or type
-        if(this.exerciseData.type == 'random' && savedWordsLength < this.exerciseData.amount){
+        if(this.exerciseData.type == 'random'){
+          if( savedWordsLength < this.exerciseData.amount){
           this.inputError = true,
-          this.message = 'You want to practice more words than you have in your database. Want to add more words? Currently you have' + savedWordsLength + ' words in your DB.'
+          this.message = 'You want to practice more words than you have in your database. Want to add more words? Currently you have' + 
+              savedWordsLength + ' words in your DB.'}
+          else{
+            for(let i = 0; i < this.exerciseData.amount; i++){
+              this.userAnswers.push('');
+            }
+            //Define a set to put random indexes in
+            let indexSet = new Set([]);
+            //Until the exercise amount is reached, fill it with random indexes ranged till filtered array length
+            let range = this.user.words.length;
+            
+            while(this.exerciseData.amount > indexSet.size){
+              let randomInt = this.randomNumberGen(range-1)
+              indexSet.add(randomInt)
+            }
+            //Turn the set into an array
+            let indexes = Array.from(indexSet.values())
+
+            //Iterate through each index, get that indexed element from filteredArray, assign it to questions array
+            for(let i = 0; i < indexes.length; i++){
+              this.exerciseQuestions.push(this.user.words[indexes[i]])
+            }
+            
+          }
+
+
         }
-        
         else if(this.exerciseData.type != 'random'){
           //array filter 
           const chosenType = this.exerciseData.type;

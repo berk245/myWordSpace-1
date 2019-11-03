@@ -4,7 +4,7 @@
       <router-link to="/">Home</router-link> |
       <router-link to="/get-started"> {{ this.$store.state.usermessage }}</router-link> |
       <router-link to="/dashboard">Private Link</router-link> 
-
+      
     </div>
     <router-view/>
   </div>

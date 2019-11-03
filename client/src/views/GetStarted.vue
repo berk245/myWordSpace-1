@@ -2,7 +2,7 @@
     <div class="container">
         <div class="login">
             <h1>Log-in Section</h1>
-            <form action="">
+            <form action="" @keyup.enter="logMeIn">
                 <input type="text" v-model="newLogin.email" placeholder="Your E-mail">
                 <input type="password" v-model="newLogin.password" placeholder="password" >
             </form>

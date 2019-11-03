@@ -77,7 +77,6 @@ export default new Vuex.Store({
         axios.post('/login', user).then(resp => {
           const user = resp.data;
           const header = resp.headers;
-          console.log(header)
           commit('auth_success', { header, user})
           router.push('/dashboard')
           resolve(resp)
