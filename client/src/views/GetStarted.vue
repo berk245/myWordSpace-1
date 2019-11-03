@@ -1,20 +1,23 @@
 <template>
     <div class="container">
         <div class="login">
-            <h1>Log-in Section</h1>
+            <h1>Login</h1>
             <form action="" @keyup.enter="logMeIn">
-                <input type="text" v-model="newLogin.email" placeholder="Your E-mail">
-                <input type="password" v-model="newLogin.password" placeholder="password" >
+                E-mail: <input type="text" v-model="newLogin.email" placeholder="Your E-mail"> <br>
+                Password: <input type="password" v-model="newLogin.password" placeholder="password" >
             </form>
+            <br>
             <button @click="logMeIn"> Log In</button>
-
+            <p v-if='loginError'> {{status}} </p>
             <br>
             <br>
             <hr>
+            <br>
 
             <div>
+                <h1>...or Sign up</h1>
                 <form action="">
-                    <input type="text" v-model="newSignup.name" placeholder="Your name"><br>
+                    <input type="text" v-model="newSignup.name" placeholder="Your username"><br>
                     <input type="text" v-model="newSignup.email" placeholder="Your E-mail"><br>
                     <input type="password" v-model="newSignup.password" placeholder="password" >
                 </form>
@@ -22,6 +25,11 @@
             </div>
             <p v-if='signUpError'> {{status}} </p>
         </div>
+        <hr>
+        <br>
+        <p>Tip: If you are here for just testing the application, you can use the guest account which is already populated with test-data</p>
+        <p>email: guest@guest.com</p>
+        <p>password: guest1</p>
 
     </div>
 </template>
@@ -57,7 +65,7 @@
 
         },
         computed:{
-            ...mapState(['status','signUpError']),
+            ...mapState(['status','signUpError','loginError']),
             
             
         }

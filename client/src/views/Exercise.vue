@@ -1,6 +1,7 @@
 <template>
   <div>
       <h1> Exercise Page </h1>
+      <h2>Choose the amount and type of words you want to practice now!</h2>
       <input type="number" value="How many words do you want to see?" v-model="exerciseData.amount">
       <select name="typeSelector" v-model="exerciseData.type">
         <option value="noun"> Noun </option>
@@ -11,6 +12,8 @@
       <br>
       <button @click="beginExercise"> Start the Show</button>
       <p v-if="inputError"> {{ message }}</p>
+      <p v-if="user.username == 'guest'"> If you have not added more, the guest database has 300 hundred entries, 100 for each word type.
+        The correct answer is the number next to the word.Ex: noun44 = 44 </p>
 
       <div>
         <hr>
@@ -51,6 +54,7 @@ export default {
         this.inputError = false;
         this.message = '';
         this.exerciseQuestions = [];
+        this.userAnswers = [];
         //Check if the amount is more than the number of words or type
         if(this.exerciseData.type == 'random'){
           if( savedWordsLength < this.exerciseData.amount){

@@ -1,19 +1,19 @@
 <template>
   <div id="app">
-    <div id="nav">
+    <div id="nav" v-if="user.loggedIn">
       <router-link to="/">Home</router-link> |
-      <router-link to="/get-started"> {{ this.$store.state.usermessage }}</router-link> |
-      <router-link to="/dashboard">Private Link</router-link> 
-      
+      <router-link to="/dashboard">Dashboard</router-link>    
     </div>
     <router-view/>
   </div>
 </template>
 <script>
   import store from './store'
-
+  import {mapState} from 'vuex'
   export default{
-    
+    computed:{
+      ...mapState(['user'])
+    }
   
   }
 </script>

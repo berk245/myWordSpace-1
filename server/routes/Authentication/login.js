@@ -11,11 +11,11 @@ router.post('/', async (req, res) => {
 
     //checking if the e-mail is already in database
     const registeredUser = await User.findOne({email: req.body.email})
-    if (!registeredUser) return res.status(400).send('E-mail or password is wrong')
+    if(!registeredUser) return res.status(203).send('E-mail or password is incorrect')
 
     //check if the password is correct
     const validPass = await bcrypt.compare(req.body.password, registeredUser.password);
-    if(!validPass) return res.status(400).send('Password is Incorrect')
+    if(!validPass) return res.status(203).send('Password is Incorrect')
 
     //Create and Assign a Token
     const token = jwt.sign({_id: registeredUser._id}, "asdsadASADsadaskmkmöcscmvscvçfdkmbf")

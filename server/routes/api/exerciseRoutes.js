@@ -16,8 +16,7 @@ router.get('/', async (req,res) => {
 router.post('/', async (req,res) => {
 
     const currentUser = await User.findOne({ email: req.body.user})
-    
-    currentUser.words.push(req.body.newWord)
+    currentUser.words.unshift(req.body.newWord)
     await currentUser.save()
     res.status(200).send(currentUser.words)
 

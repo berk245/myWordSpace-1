@@ -9,10 +9,17 @@
           <br>
           <h4> You can start by adding new words to your database to practice them later. Viel Erfolg!!</h4>
         </div>
-        <div v-if="!firstTime">
+        <div v-if="user.username == 'guest'">
           <h2>Welcome {{user.username}} </h2>
           <br>
-          <h3>Nice to have you back here!</h3>
+          <h3> You can add words / start exercising / see & edit the words you have added!</h3>
+          <br>
+          <h4> Are you ready to practice?</h4>
+        </div>
+        <div v-else>
+          <h2>Welcome {{user.username}} </h2>
+          <br>
+          <h3>Nice to have you back here! You can add new words / start exercising / see the words you have added!</h3>
           <br>
           <h4> Are you ready to practice?</h4>
         </div>

@@ -10,13 +10,14 @@ Vue.use(Vuex)
 export default new Vuex.Store({
   state: {
     status: localStorage.getItem('user-status') || 'not logged in',
-    usermessage: "Login",
     signUpError: false,
+    loginError: false,
     token: localStorage.getItem('auth-token') || '',
     user: {
       username: '',
       email: '',
       firstTime: false,
+      loggedIn: false,
       words: []
     } // _id & email & name & password
   },
@@ -35,6 +36,7 @@ export default new Vuex.Store({
       state.user.username = user.name,
       state.user.email = user.email,
       state.user.words = user.words,
+      state.user.loggedIn = true,
       localStorage.setItem('auth-token', header.token)
       localStorage.setItem('user', user) 
       localStorage.setItem('user-status',  state.status) 
@@ -57,9 +59,13 @@ export default new Vuex.Store({
       state.status = errorMessage,
       state.signUpError = true
     },
+    incorrect_info(state, errorMessage){
+      state.status = errorMessage,
+      state.loginError = true
+    },
     logout_success(state){
       state.status = 'not logged in'
-      state.usermessage = 'Login'
+      state.user.loggedIn = false
       state.firstTime = false
     },
     add_word_success(state, updatedWords){
@@ -75,11 +81,19 @@ export default new Vuex.Store({
       return new Promise((resolve, reject) => {
         commit('auth_request')
         axios.post('/login', user).then(resp => {
-          const user = resp.data;
-          const header = resp.headers;
-          commit('auth_success', { header, user})
-          router.push('/dashboard')
-          resolve(resp)
+          if(resp.status == 200){
+            const user = resp.data;
+            const header = resp.headers;
+            commit('auth_success', { header, user})
+            router.push('/dashboard')
+            resolve(resp)
+          }
+          else{
+            commit('incorrect_info', resp.data)
+            console.log(resp)
+            resolve()
+          }
+          
         })
         .catch(err => {
           commit('auth_error')
@@ -119,7 +133,7 @@ export default new Vuex.Store({
       localStorage.removeItem('auth-token')
       localStorage.removeItem('user')
       localStorage.removeItem('user-status')
-      router.push('/get-started')
+      router.push('/')
       commit('logout_success')
     },
     addWords({ commit, state }, newWord){
