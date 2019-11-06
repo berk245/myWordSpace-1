@@ -156,7 +156,7 @@ export default new Vuex.Store({
     deleteWord({commit, state }, index){
       return new Promise((res, rej) => {
           const user = state.user.email;
-          axios.post(`/api/delete`, { user, index}).then(resp => {
+          axios.post(`/delete`, { user, index}).then(resp => {
             console.log(resp);
             commit('delete_success', resp) //updated word array
             res()
