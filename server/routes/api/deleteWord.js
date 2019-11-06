@@ -4,7 +4,7 @@ const router = express.Router();
 const User = require('../../models/userModel')
 
 //Delete the Words
-router.post('/delete', async (req, res) => {
+router.post('/', async (req, res) => {
     const currentUser = await User.findOne({ email: req.body.user})
     let index = req.body.index;
     currentUser.words.splice(index,1)
