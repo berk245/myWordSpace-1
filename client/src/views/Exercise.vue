@@ -72,6 +72,7 @@ export default {
         this.wrongAnswers = [];
         this.exerciseDone = false;
         this.userScore = 0;
+        this.allCorrect = true;
         //Check if the amount is more than the number of words or type
         if(this.exerciseData.type == 'random'){
           if( savedWordsLength < this.exerciseData.amount){
