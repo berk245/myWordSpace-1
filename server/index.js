@@ -23,6 +23,9 @@ app.use(cors())
 const exerciseRoutes = require('./routes/api/exerciseRoutes')
 app.use('/api', exerciseRoutes);
 
+const deleteWord = require('./routes/api/deleteWord')
+app.use('/delete', deleteWord);
+
 const signUp = require('./routes/Authentication/signUp')
 app.use('/signup', signUp);
 

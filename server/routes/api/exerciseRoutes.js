@@ -4,10 +4,9 @@ const router = express.Router();
 const User = require('../../models/userModel')
 
 
-
 //Get the Words
 router.get('/', async (req,res) => {
-    const words = await loadExerciseData();
+    const words = await loadUserData();
     res.send(await words.find({}).toArray());
 })
 
@@ -21,17 +20,9 @@ router.post('/', async (req,res) => {
     res.status(200).send(currentUser.words)
 
 })
-
-//Delete the Words
-router.delete('/:wordID', async (req, res) => {
-    const words = await loadExerciseData();
-    await words.deleteOne({_id: new mongodb.ObjectID(req.params.wordID)});
-    res.status(200).send();
-
-})
    
 
-async function loadExerciseData(){
+async function loadUserData(){
     const client = await mongodb.MongoClient.connect("mongodb+srv://newUser:123new@cluster0-oixaf.gcp.mongodb.net/admin?retryWrites=true&w=majority", {
         useNewUrlParser: true,
         useUnifiedTopology: true,

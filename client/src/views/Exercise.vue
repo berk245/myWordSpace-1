@@ -18,11 +18,20 @@
       <div>
         <hr>
         <br><br>
-        
+        <div v-if="exerciseDone">
+          <p>Your Score: {{userScore}} / {{exerciseQuestions.length}}</p>
+          <div v-if="!allCorrect">
+            <p>Here are the exercises you missed this time!</p>
+            <div v-for="(data, index) in wrongAnswers" :key="index">
+              {{data.german}} - {{data.english}}
+            </div>
+          </div>
+        </div>
         <div class="question" v-for="(question, index) in exerciseQuestions" :key="question.id">
             <p> {{ question.english }} </p>
             <input type="text" placeholder="Deutsch Übersetzung" v-model="userAnswers[index]" :class="{correct : userAnswers[index] == question.german}">    
         </div>
+        <button v-if="exerciseStarted" @click="checkAnswers"> Done! </button>
       </div>
   </div>
 </template>
@@ -40,8 +49,12 @@ export default {
         inputError: false,
         message: '',
         exerciseQuestions: [],
-        userAnswers: []
-
+        userAnswers: [],
+        wrongAnswers: [],
+        exerciseStarted: false,
+        exerciseDone: false,
+        allCorrect: true,
+        userScore: 0
       }
     },
     methods:{
@@ -50,11 +63,15 @@ export default {
         return randomNumber;
       },
       beginExercise(){
+        this.exerciseStarted = true;
         const savedWordsLength = this.user.words.length;
         this.inputError = false;
         this.message = '';
         this.exerciseQuestions = [];
         this.userAnswers = [];
+        this.wrongAnswers = [];
+        this.exerciseDone = false;
+        this.userScore = 0;
         //Check if the amount is more than the number of words or type
         if(this.exerciseData.type == 'random'){
           if( savedWordsLength < this.exerciseData.amount){
@@ -123,6 +140,21 @@ export default {
 
           }
         }
+      },
+      checkAnswers(){
+        for(let i = 0; i < this.exerciseQuestions.length; i++){
+          if(this.exerciseQuestions[i].german != this.userAnswers[i]){
+            this.wrongAnswers.push(this.exerciseQuestions[i]);
+            this.allCorrect = false;
+          }
+        }
+        this.exerciseDone = true;
+        if(this.allCorrect == true){
+          this.userScore = this.exerciseQuestions.length
+        }
+        else{
+          this.userScore = (this.exerciseQuestions.length) - this.wrongAnswers.length
+        }     
       }
     },
     computed:{

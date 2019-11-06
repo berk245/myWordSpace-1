@@ -14,6 +14,7 @@ export default new Vuex.Store({
     loginError: false,
     token: localStorage.getItem('auth-token') || '',
     user: {
+      userID: '',
       username: '',
       email: '',
       firstTime: false,
@@ -34,6 +35,7 @@ export default new Vuex.Store({
       state.usermessage = "Logout"
       state.token = header.token,
       state.user.username = user.name,
+      state.user.userID = user._id,
       state.user.email = user.email,
       state.user.words = user.words,
       state.user.loggedIn = true,
@@ -70,6 +72,9 @@ export default new Vuex.Store({
     },
     add_word_success(state, updatedWords){
       state.user.words = updatedWords.data
+    },
+    delete_success(state, arr){
+      state.user.words = arr.data
     }
 
 
@@ -82,6 +87,7 @@ export default new Vuex.Store({
         commit('auth_request')
         axios.post('/login', user).then(resp => {
           if(resp.status == 200){
+            console.log(resp)
             const user = resp.data;
             const header = resp.headers;
             commit('auth_success', { header, user})
@@ -145,6 +151,16 @@ export default new Vuex.Store({
           resolve()
         }).catch(err => reject())
 
+      })
+    },
+    deleteWord({commit, state }, index){
+      return new Promise((res, rej) => {
+          const user = state.user.email;
+          axios.post(`/api/delete`, { user, index}).then(resp => {
+            console.log(resp);
+            commit('delete_success', resp) //updated word array
+            res()
+          }).catch(err => rej(err))
       })
     }
   }
