@@ -4,9 +4,17 @@
     <h1> Home Page for Deutsch App</h1>
     <h2>Welcome to the Deutsch Wörterbuch App!</h2>
     <h3>This is a project by Berk Özzambak as an intersection of his Software Development learning journey with his German learning one.</h3>
-    <router-link to="/get-started">
-      <button> Get Started </button>
-    </router-link>    
+    <div v-if="status != 'not logged in'">
+      <router-link to="/dashboard">
+        <button> Get Started </button>
+      </router-link> 
+    </div>
+    <div v-else>
+      <router-link to="/get-started">
+        <button> Get Started </button>
+      </router-link>   
+    </div>
+     
     
     <p> Your login status: {{status}} </p>
   </div>

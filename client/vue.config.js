@@ -13,9 +13,13 @@ module.exports = {
             '/signup': {
                 target: 'http://localhost:5000'
             },
+            '/edit': {
+                target: 'http://localhost:5000'
+            },
             '/delete': {
                 target: 'http://localhost:5000'
             }
+            
         }
     }
 }

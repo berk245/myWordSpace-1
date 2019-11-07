@@ -7,6 +7,8 @@
         <option value="noun"> Noun </option>
         <option value="verb"> Verb </option>
         <option value="sentence"> Sentence or Phrase </option>
+        <option value="adjective"> Adjective</option>
+        <option value="preposition"> Preposition</option>
         <option value="random"> Random </option>
       </select>
       <br>

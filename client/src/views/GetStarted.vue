@@ -66,9 +66,8 @@
         },
         computed:{
             ...mapState(['status','signUpError','loginError']),
-            
-            
-        }
+        },
+        
     }
 
 </script>

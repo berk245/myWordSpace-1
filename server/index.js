@@ -26,6 +26,9 @@ app.use('/api', exerciseRoutes);
 const deleteWord = require('./routes/api/deleteWord')
 app.use('/delete', deleteWord);
 
+const updateWord = require('./routes/api/updateWord')
+app.use('/edit', updateWord);
+
 const signUp = require('./routes/Authentication/signUp')
 app.use('/signup', signUp);
 

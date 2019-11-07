@@ -75,6 +75,9 @@ export default new Vuex.Store({
     },
     delete_success(state, arr){
       state.user.words = arr.data
+    },
+    update_success(state, resp){
+      state.user.words = resp.data
     }
 
 
@@ -159,6 +162,16 @@ export default new Vuex.Store({
           axios.post(`/delete`, { user, index}).then(resp => {
             console.log(resp);
             commit('delete_success', resp) //updated word array
+            res()
+          }).catch(err => rej(err))
+      })
+    },
+    updateWord({commit, state}, {index, newWord}){
+      return new Promise((res, rej) => {
+          const user = state.user.email;
+          axios.post('/edit', { user, index, newWord}).then(resp => {
+            console.log(resp);
+            commit('update_success', resp) //updated word array
             res()
           }).catch(err => rej(err))
       })
