@@ -1,75 +1,75 @@
-import Vue from 'vue'
-import Router from 'vue-router'
-import Home from './views/Home.vue'
-import GetStarted from './views/GetStarted.vue'
-import AddWords from './views/AddWords.vue'
-import Exercise from './views/Exercise.vue'
-import Dashboard from './views/Dashboard'
-import AllWords from './views/AllWords'
-import store from './store';
+import Vue from "vue";
+import Router from "vue-router";
+import Home from "./views/Home.vue";
+import GetStarted from "./views/GetStarted.vue";
+import AddWords from "./views/AddWords.vue";
+import Exercise from "./views/Exercise.vue";
+import Dashboard from "./views/Dashboard";
+import AllWords from "./views/AllWords";
+import store from "./store";
+import jwt from "jsonwebtoken";
 
-Vue.use(Router)
+Vue.use(Router);
 
-const router =  new Router({
-  mode: 'history',
+const router = new Router({
+  mode: "history",
   base: process.env.BASE_URL,
   routes: [
     {
-      path: '/',
-      name: 'home',
-      component: Home,
+      path: "/",
+      name: "home",
+      component: Home
     },
     {
-      path: '/get-started',
-      name: 'get-started',
-      component: GetStarted,
+      path: "/get-started",
+      name: "get-started",
+      component: GetStarted
     },
     {
-      path: '/add-words',
-      name: 'addWords',
+      path: "/add-words",
+      name: "addWords",
       component: AddWords,
-      meta:{
+      meta: {
         requiresAuth: true
       }
     },
     {
-      path: '/exercise',
-      name: 'Exercise',
+      path: "/exercise",
+      name: "Exercise",
       component: Exercise,
-      meta:{
+      meta: {
         requiresAuth: true
       }
     },
     {
-      path: '/dashboard',
-      name: 'Dashboard',
+      path: "/dashboard",
+      name: "Dashboard",
       component: Dashboard,
-      meta:{
+      meta: {
         requiresAuth: true
       }
     },
     {
-      path: '/edit-words',
-      name: 'EditWords',
+      path: "/edit-words",
+      name: "EditWords",
       component: AllWords,
-      meta:{
+      meta: {
         requiresAuth: true
       }
     }
   ]
-})
+});
 
-  router.beforeEach((to, from, next) => {
-    if(to.meta.requiresAuth){
-      if(!store.getters.isLoggedIn){
-        next('/get-started')
-        return
-      }
-      next()
-    } else{
-      next()
+router.beforeEach((to, from, next) => {
+  if (to.meta.requiresAuth) {
+    if (!store.getters.isLoggedIn) {
+      next("/get-started");
+      return;
     }
-})
-
+    next();
+  } else {
+    next();
+  }
+});
 
 export default router;

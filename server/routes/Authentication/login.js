@@ -24,16 +24,17 @@ router.post("/", async (req, res) => {
   const token = jwt.sign(
     { _id: registeredUser._id },
     "asdsadASADsadaskmkmöcscmvscvçfdkmbf",
-    { expiresIn: "10m" }
+    { expiresIn: 60000 }
   );
   res.header("token", token);
 
   //Update the logins of the user
-  registeredUser.logins.push(Date());
+  registeredUser.logins.unshift(Date());
   await registeredUser.save();
   let curUser = {
     username: registeredUser.name,
     words: registeredUser.words,
+    email: registeredUser.email,
     loggedIn: true
   };
   res.send(curUser);

@@ -14,6 +14,7 @@ export default new Vuex.Store({
     token: sessionStorage.getItem("auth-token") || "",
     user: JSON.parse(sessionStorage.getItem("user")) || {
       username: "",
+      email: "",
       loggedIn: false,
       firstTime: false,
       words: []
@@ -28,9 +29,10 @@ export default new Vuex.Store({
       state.status = "Loading";
     },
     auth_success(state, { header, user }) {
-      (state.status = "Logged In"), (state.usermessage = "Logout");
-      (state.token = header.token),
+      (state.status = "Logged In"),
+        (state.token = header.token),
         (state.user.username = user.username),
+        (state.user.email = user.email),
         (state.user.words = user.words),
         (state.user.loggedIn = user.loggedIn);
       sessionStorage.setItem("auth-token", header.token);
@@ -59,6 +61,11 @@ export default new Vuex.Store({
     logout_success(state) {
       state.status = "not logged in";
       state.firstTime = false;
+      (state.user.username = ""),
+        (state.user.loggedIn = false),
+        (state.user.firstTime = false),
+        (state.user.words = []);
+      state.user.email = "";
     },
     add_word_success(state, updatedWords) {
       state.user.words = updatedWords.data;
@@ -78,7 +85,6 @@ export default new Vuex.Store({
           .post("/login", user)
           .then(resp => {
             if (resp.status == 200) {
-              console.log(resp);
               const user = resp.data;
               const header = resp.headers;
               commit("auth_success", { header, user });
