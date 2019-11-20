@@ -2,10 +2,11 @@
     <div class="container">
         <h1> See / Update / Delete the Words</h1> 
         <div class="wordBox" v-for="(word,index) in user.words" :key="index">
-                <p class="boxData"> {{word.german}}</p>
-                <p class="boxData"> {{word.english}} </p>
+                <p class="boxData"> {{word.german}}</p> |
+                <p class="boxData"> {{word.english}} </p> |
+                <p class="boxData"> {{word.type}} </p>
                 <button @click="updateReq(index)"> Edit </button>
-                <button class="boxButton" @click="deleteWord(index)">X</button>
+                
                 
                 <div class="editPart" v-if="toUpdate && updateIndex == index">
                     <form>
@@ -25,7 +26,8 @@
                 </form>
                 <button @click="updateMe"> Update </button>
 
-        </div>      
+                </div>   
+                <button class="boxButton" @click="deleteWord(index)">X</button>   
         </div>
         
             
@@ -61,7 +63,7 @@ export default {
            this.deleteWord(ind);
        },
        updateReq(ind){
-           this.toUpdate = true;
+           this.toUpdate = !this.toUpdate;
            this.updateIndex = ind;         
        },
        updateMe(){

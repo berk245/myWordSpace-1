@@ -1,26 +1,25 @@
 <template>
   <div id="app">
     <div id="nav" v-if="user.loggedIn">
-      <router-link to="/">Home</router-link> |
-      <router-link to="/dashboard">Dashboard</router-link>    
+      <router-link to="/">Home</router-link>|
+      <router-link to="/dashboard">Dashboard</router-link>
     </div>
-    <router-view/>
+    <router-view />
   </div>
 </template>
 <script>
-  import store from './store'
-  import {mapState} from 'vuex'
-  export default{
-    computed:{
-      ...mapState(['user'])
-    }
-  
+import store from "./store";
+import { mapState, mapActions } from "vuex";
+export default {
+  computed: {
+    ...mapState(["user"])
   }
+};
 </script>
 
 <style>
 #app {
-  font-family: 'Avenir', Helvetica, Arial, sans-serif;
+  font-family: "Avenir", Helvetica, Arial, sans-serif;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
   text-align: center;
