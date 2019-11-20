@@ -6,7 +6,7 @@
     <h3>This is a project by Berk Özzambak as an intersection of his Software Development learning journey with his German learning one.</h3>
     <div v-if="status != 'not logged in'">
       <router-link to="/dashboard">
-        <button>Get Started</button>
+        <button>Go to Dashboard</button>
       </router-link>
     </div>
     <div v-else>
@@ -16,22 +16,27 @@
     </div>
 
     <p>Your login status: {{status}}</p>
+    <button @click="logOut" v-if="status == 'Logged In'">Log Out</button>
   </div>
 </template>
 
 <script>
 // @ is an alias to /src
-import { mapState } from "vuex";
+import { mapState, mapActions } from "vuex";
 
 export default {
   name: "home",
   data() {
     return {};
   },
-  methods: {},
+  methods: {
+    ...mapActions(["logOut"])
+  },
   computed: {
     ...mapState(["status"])
   },
-  created() {}
+  created() {
+    document.addEventListener("beforeunload", this.logOut);
+  }
 };
 </script>

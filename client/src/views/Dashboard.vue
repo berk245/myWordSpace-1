@@ -1,66 +1,61 @@
 <template>
   <div>
-      
-      <div>
-        <div v-if="firstTime">
-          <h2>Welcome {{user.username}} </h2>
-          <br>
-          <h3>It's your first time here! How exciting</h3>
-          <br>
-          <h4> You can start by adding new words to your database to practice them later. Viel Erfolg!!</h4>
-        </div>
-        <div v-if="user.username == 'guest'">
-          <h2>Welcome {{user.username}} </h2>
-          <br>
-          <h3> You can add words / start exercising / see & edit the words you have added!</h3>
-          <br>
-          <h4> Are you ready to practice?</h4>
-        </div>
-        <div v-else>
-          <h2>Welcome {{user.username}} </h2>
-          <br>
-          <h3>Nice to have you back here! You can add new words / start exercising / see the words you have added!</h3>
-          <br>
-          <h4> Are you ready to practice?</h4>
-        </div>
+    <div>
+      <div v-if="firstTime">
+        <h2>Welcome {{user.username}}</h2>
+        <br />
+        <h3>It's your first time here! How exciting</h3>
+        <br />
+        <h4>You can start by adding new words to your database to practice them later. Viel Erfolg!!</h4>
       </div>
-      <div id="nav">
-        <router-link to="/add-words">
-          <img class="dashImg" :src="addImage" alt="Add Words" >
-        </router-link> 
-        <router-link to="/exercise">
-          <img class="dashImg" :src="practiceImage" alt="Add Words">
-        </router-link> 
-        <router-link to="/edit-words">
-          <img class="dashImg" :src="editImage" alt="Edit Words">
-        </router-link> 
+      <div v-if="user.username == 'guest'">
+        <h2>Welcome {{user.username}}</h2>
+        <br />
+        <h3>You can add words / start exercising / see & edit the words you have added!</h3>
+        <br />
+        <h4>Are you ready to practice?</h4>
       </div>
-      <button @click="logOut"> Log Out </button>
-      
+      <div v-else>
+        <h2>Welcome {{user.username}}</h2>
+        <br />
+        <h3>Nice to have you back here! You can add new words / start exercising / see the words you have added!</h3>
+        <br />
+        <h4>Are you ready to practice?</h4>
+      </div>
+    </div>
+    <div id="nav">
+      <router-link to="/add-words">
+        <img class="dashImg" :src="addImage" alt="Add Words" />
+      </router-link>
+      <router-link to="/exercise">
+        <img class="dashImg" :src="practiceImage" alt="Add Words" />
+      </router-link>
+      <router-link to="/edit-words">
+        <img class="dashImg" :src="editImage" alt="Edit Words" />
+      </router-link>
+    </div>
+    <button @click="logOut">Log Out</button>
   </div>
-
-  
-  
 </template>
 
 <script>
-import {mapActions, mapState} from 'vuex'
+import { mapActions, mapState } from "vuex";
 export default {
-    name: 'Dashboard',
-    data(){
-      return{
-        addImage: require('@/assets/images/add.jpg'),
-        practiceImage: require('@/assets/images/exercise.png'),
-        editImage: require('@/assets/images/edit.png')
-      }
-    },
-    methods:{
-      ...mapActions(['logOut']),
-    },
-    computed:{
-      ...mapState(['status', 'user', 'firstTime'])
-    }
-}
+  name: "Dashboard",
+  data() {
+    return {
+      addImage: require("@/assets/images/add.jpg"),
+      practiceImage: require("@/assets/images/exercise.png"),
+      editImage: require("@/assets/images/edit.png")
+    };
+  },
+  methods: {
+    ...mapActions(["logOut"])
+  },
+  computed: {
+    ...mapState(["status", "user", "firstTime"])
+  }
+};
 </script>
 
 <style>
@@ -76,11 +71,11 @@ export default {
 #nav a.router-link-exact-active {
   color: #42b983;
 }
-.dashImg{
+.dashImg {
   width: 30vw;
   height: 20vh;
   margin: 20px;
-  border: .2px solid #42b983;
+  border: 0.2px solid #42b983;
 }
 </style>
 

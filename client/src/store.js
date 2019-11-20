@@ -8,19 +8,16 @@ Vue.use(Vuex);
 
 export default new Vuex.Store({
   state: {
-    status: localStorage.getItem("user-status") || "not logged in",
+    status: sessionStorage.getItem("user-status") || "not logged in",
     signUpError: false,
     loginError: false,
-    token: localStorage.getItem("auth-token") || "",
-    user:
-      {
-        userID: "",
-        username: "",
-        email: "",
-        firstTime: false,
-        loggedIn: false,
-        words: []
-      } || localStorage.getItem("user") // _id & email & name & password
+    token: sessionStorage.getItem("auth-token") || "",
+    user: JSON.parse(sessionStorage.getItem("user")) || {
+      username: "",
+      loggedIn: false,
+      firstTime: false,
+      words: []
+    } // _id & email & name & password
   },
   getters: {
     isLoggedIn: state => !!state.token,
@@ -33,14 +30,12 @@ export default new Vuex.Store({
     auth_success(state, { header, user }) {
       (state.status = "Logged In"), (state.usermessage = "Logout");
       (state.token = header.token),
-        (state.user.username = user.name),
-        (state.user.userID = user._id),
-        (state.user.email = user.email),
+        (state.user.username = user.username),
         (state.user.words = user.words),
-        (state.user.loggedIn = true),
-        localStorage.setItem("auth-token", header.token);
-      localStorage.setItem("user", user);
-      localStorage.setItem("user-status", state.status);
+        (state.user.loggedIn = user.loggedIn);
+      sessionStorage.setItem("auth-token", header.token);
+      sessionStorage.setItem("user", JSON.stringify(user));
+      sessionStorage.setItem("user-status", state.status);
     },
     auth_error(state) {
       state.status = "Error";
@@ -63,7 +58,6 @@ export default new Vuex.Store({
     },
     logout_success(state) {
       state.status = "not logged in";
-      state.user.loggedIn = false;
       state.firstTime = false;
     },
     add_word_success(state, updatedWords) {
@@ -98,7 +92,7 @@ export default new Vuex.Store({
           })
           .catch(err => {
             commit("auth_error");
-            localStorage.removeItem("auth-token");
+            sessionStorage.removeItem("auth-token");
             console.log(err);
             reject();
           });
@@ -136,9 +130,9 @@ export default new Vuex.Store({
       });
     },
     logOut({ commit }) {
-      localStorage.removeItem("auth-token");
-      localStorage.removeItem("user");
-      localStorage.removeItem("user-status");
+      sessionStorage.removeItem("auth-token");
+      sessionStorage.removeItem("user");
+      sessionStorage.removeItem("user-status");
       router.push("/");
       commit("logout_success");
     },

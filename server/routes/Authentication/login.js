@@ -6,7 +6,7 @@ const jwt = require("jsonwebtoken");
 
 router.post("/", async (req, res) => {
   const { error } = loginValidation(req.body);
-  if (error) return res.status(400).send(error.details[0].message);
+  if (error) return res.status(203).send(error.details[0].message);
 
   //checking if the e-mail is already in database
   const registeredUser = await User.findOne({ email: req.body.email });
@@ -31,7 +31,12 @@ router.post("/", async (req, res) => {
   //Update the logins of the user
   registeredUser.logins.push(Date());
   await registeredUser.save();
-  res.send(registeredUser);
+  let curUser = {
+    username: registeredUser.name,
+    words: registeredUser.words,
+    loggedIn: true
+  };
+  res.send(curUser);
 });
 
 module.exports = router;
