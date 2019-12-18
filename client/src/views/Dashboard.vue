@@ -1,5 +1,40 @@
 <template>
-  <div>
+  <div class="container">
+    <navbar></navbar>
+    <div class="bg">
+      <div class="bg-stars"></div>
+      <div class="bg-moon"></div>
+      <div class="bg-planet"></div>
+      <div class="title"></div>
+    </div>
+    <div class="box box-top">
+      <div v-if="user.firstTime">
+        <h2 class="text title-welcome">Welcome aboard {{ user.username }}!</h2>
+        <p class="text welcome-text">
+          This is your dashboard. You can create ‘Wordbooks’, add
+          new words and practice the words you have added. You
+          can use the button on with to navigate in your space anytime!
+        </p>
+      </div>
+      <div v-else>
+        <h2 class="text title-text">Welcome back {{ user.username }}!</h2>
+        <p
+          class="text box-text"
+        >Last time you were here was {{ user.lastLogin }}. Create notebooks, add words and practice. Are you ready to get to work?</p>
+      </div>
+    </div>
+    <div class="box box-exercise">
+      <div class="chart">This is the Chart Section</div>
+      <div class="stats">Here are some statistics</div>
+      <div class="goPractice">
+        <button class="p-button">Exercise!</button>
+      </div>
+    </div>
+    <div class="box box-books"></div>
+    <div class="box box-words"></div>
+  </div>
+
+  <!-- <div>
     <div>
       <div v-if="firstTime">
         <h2>Welcome {{user.username}}</h2>
@@ -35,48 +70,138 @@
       </router-link>
     </div>
     <button @click="logOut">Log Out</button>
-  </div>
+  </div>-->
 </template>
 
 <script>
-import { mapActions, mapState } from "vuex";
+import { mapState, mapActions, mapGetters } from "vuex";
+import router from "../router";
+import Login from "../components/Login";
+import Signup from "../components/SignUp";
+import Navbar from "../components/Navbar";
+
 export default {
-  name: "Dashboard",
   data() {
-    return {
-      addImage: require("@/assets/images/add.jpg"),
-      practiceImage: require("@/assets/images/exercise.png"),
-      editImage: require("@/assets/images/edit.png")
-    };
+    return {};
+  },
+  components: {
+    Login,
+    Signup,
+    Navbar
   },
   methods: {
-    ...mapActions(["logOut"])
+    ...mapActions(["login", "signup"])
   },
   computed: {
-    ...mapState(["status", "user", "firstTime"])
+    ...mapState([
+      "status",
+      "user",
+      "signUpError",
+      "loginError",
+      "componentSignup"
+    ])
   }
 };
 </script>
+<style scoped lang="scss">
+.bg {
+  &-moon {
+    top: 5rem;
+    left: 2vw;
+  }
+}
+.box {
+  background: rgba(255, 255, 255, 0.95);
+  border: 2px solid #00e7ff;
+  box-sizing: border-box;
+  border-radius: 10px;
+  left: 13%;
+  &-top {
+    position: relative;
+    top: 12vh;
+    width: 73%;
+    height: 15vh;
+  }
+  &-exercise {
+    position: relative;
+    width: 45%;
+    height: 35vh;
+    top: 15vh;
+    display: grid;
+    grid-template-areas:
+      "chart chart stats stats"
+      "chart chart stats stats"
+      "chart chart stats stats"
+      "chart chart stats stats"
+      "chart chart stats stats"
+      "chart chart stats stats"
+      "chart chart stats stats"
+      "goPractice goPractice goPractice goPractice";
+    .chart {
+      grid-area: chart;
+    }
+    .stats {
+      grid-area: stats;
+    }
+    .goPractice {
+      grid-area: goPractice;
+      top: 60%;
+      left: 80%;
+      .p-button {
+        width: 100%;
+        height: 100%;
+        background-color: #000103;
+        border-radius: 0 0 10px 10px;
+        border: solid 1px #00e7ff;
+        font-family: Dosis;
+        font-size: 1.4rem;
+        color: white;
+        &:hover {
+          background-color: #ffce00;
+        }
+      }
+    }
+  }
 
-<style>
-#nav {
-  padding: 30px;
+  &-books {
+    position: relative;
+    width: 45%;
+    height: 25vh;
+    top: 18vh;
+  }
+  &-words {
+    position: absolute;
+    width: 26.5vw;
+    height: 63vh;
+    top: 30vh;
+    left: 59.5%;
+  }
 }
 
-#nav a {
-  font-weight: bold;
-  color: #2c3e50;
+.text {
+  font-family: Raleway;
+  margin-left: 1rem;
 }
-
-#nav a.router-link-exact-active {
-  color: #42b983;
+.title-text {
+  font-family: Dosis;
+  margin-top: 0.5rem;
+  font-size: 1.7rem;
 }
-.dashImg {
-  width: 30vw;
-  height: 20vh;
-  margin: 20px;
-  border: 0.2px solid #42b983;
+.box-text {
+  font-size: 1.1rem;
+  margin-top: 0.7rem;
+  font-weight: 500;
 }
-</style>
-
+.welcome {
+  margin-top: 0.5rem;
+}
+.welcome-text {
+  font-size: 1rem;
+  margin-top: 0.5rem;
+}
+.title-welcome {
+  font-family: Dosis;
+  font-size: 1.5rem;
+  margin-top: 0.2rem;
+}
 </style>

@@ -10,6 +10,8 @@
   "dependencies": {
     "axios": "^0.19.0",
     "core-js": "^2.6.5",
+    "sass": "^1.23.7",
+    "sass-loader": "^8.0.0",
     "vue": "^2.6.10",
     "vue-paginate": "^3.6.0",
     "vue-router": "^3.0.3",

@@ -29,13 +29,29 @@ router.post("/", async (req, res) => {
   res.header("token", token);
 
   //Update the logins of the user
-  registeredUser.logins.unshift(Date());
+  let currentDate = new Date();
+  let formattedDate =
+    currentDate.getDate() +
+    "/" +
+    currentDate.getMonth() +
+    "/" +
+    currentDate.getFullYear() +
+    " at " +
+    currentDate.getHours() +
+    ":" +
+    ("0" + currentDate.getMinutes()).slice(-2);
+  registeredUser.logins.unshift(formattedDate);
+
   await registeredUser.save();
+
+  if (registeredUser.logins.length > 1) {
+    var lastActive = registeredUser.logins[1];
+  }
   let curUser = {
     username: registeredUser.name,
     words: registeredUser.words,
     email: registeredUser.email,
-    loggedIn: true
+    lastLogin: lastActive
   };
   res.send(curUser);
 });

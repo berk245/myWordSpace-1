@@ -1,9 +1,5 @@
 <template>
   <div id="app">
-    <div id="nav" v-if="user.loggedIn">
-      <router-link to="/">Home</router-link>|
-      <router-link to="/dashboard">Dashboard</router-link>
-    </div>
     <router-view />
   </div>
 </template>
@@ -17,24 +13,24 @@ export default {
 };
 </script>
 
-<style>
+<style lang="scss">
+@import url("https://fonts.googleapis.com/css?family=Dosis|Raleway&display=swap");
+* {
+  margin: 0;
+  &:focus {
+    outline: none;
+  }
+}
 #app {
-  font-family: "Avenir", Helvetica, Arial, sans-serif;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
-  text-align: center;
-  color: #2c3e50;
-}
-#nav {
-  padding: 30px;
-}
+  //position: relative;
+  overflow: hidden;
+  width: 100vw;
+  height: 100vh;
 
-#nav a {
-  font-weight: bold;
-  color: #2c3e50;
-}
-
-#nav a.router-link-exact-active {
-  color: #42b983;
+  background: radial-gradient(
+    100% 270.84% at 100% 0%,
+    #000103 0%,
+    rgba(4, 50, 210, 0.8) 100%
+  );
 }
 </style>

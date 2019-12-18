@@ -11,12 +11,13 @@ export default new Vuex.Store({
     status: sessionStorage.getItem("user-status") || "not logged in",
     signUpError: false,
     loginError: false,
+    componentSignup: false,
     token: sessionStorage.getItem("auth-token") || "",
     user: JSON.parse(sessionStorage.getItem("user")) || {
       username: "",
       email: "",
-      loggedIn: false,
       firstTime: false,
+      lastLogin: "",
       words: []
     } // _id & email & name & password
   },
@@ -26,7 +27,7 @@ export default new Vuex.Store({
   },
   mutations: {
     auth_request(state) {
-      state.status = "Loading";
+      state.status = "Logging you in...";
     },
     auth_success(state, { header, user }) {
       (state.status = "Logged In"),
@@ -34,7 +35,7 @@ export default new Vuex.Store({
         (state.user.username = user.username),
         (state.user.email = user.email),
         (state.user.words = user.words),
-        (state.user.loggedIn = user.loggedIn);
+        (state.user.lastLogin = user.lastLogin);
       sessionStorage.setItem("auth-token", header.token);
       sessionStorage.setItem("user", JSON.stringify(user));
       sessionStorage.setItem("user-status", state.status);
@@ -47,9 +48,10 @@ export default new Vuex.Store({
     },
     signup_success(state) {
       state.status = "Sign-up Successful, logging you in now...";
-      state.firstTime = true;
+      state.user.firstTime = true;
     },
     signup_error(state, error) {
+      state.signUpError = true;
       state.status = error;
     },
     incorrect_values(state, errorMessage) {
@@ -75,9 +77,17 @@ export default new Vuex.Store({
     },
     update_success(state, resp) {
       state.user.words = resp.data;
+    },
+    component_signup(state) {
+      state.componentSignup = !state.componentSignup;
+      state.loginError = false;
+      state.signUpError = false;
     }
   },
   actions: {
+    signupComp({ commit }) {
+      commit("component_signup");
+    },
     login({ commit }, user) {
       return new Promise((resolve, reject) => {
         commit("auth_request");
