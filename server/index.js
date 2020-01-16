@@ -1,49 +1,54 @@
-const express = require('express')
-const bodyParser = require('body-parser')
-const cors = require('cors')
-const dotenv = require('dotenv')
-const mongoose = require('mongoose')
+const express = require("express");
+const bodyParser = require("body-parser");
+const cors = require("cors");
+const dotenv = require("dotenv");
+const mongoose = require("mongoose");
 
-dotenv.config(); 
+dotenv.config();
 
 const app = express();
 
 //Connect to Auth DB
 
-mongoose.connect("mongodb+srv://newUser:123new@cluster0-oixaf.gcp.mongodb.net/deutschApp?retryWrites=true&w=majority",{ useNewUrlParser: true, useUnifiedTopology: true},
-() => console.log('connected to DB'));
-
+mongoose.connect(
+  "mongodb+srv://newUser:123new@cluster0-oixaf.gcp.mongodb.net/deutschApp?retryWrites=true&w=majority",
+  { useNewUrlParser: true, useUnifiedTopology: true },
+  () => console.log("connected to DB")
+);
 
 //midware
-app.use(bodyParser.json())
-app.use(cors())
+app.use(bodyParser.json());
+app.use(cors());
 
+const addWords = require("./routes/api/addWords");
+app.use("/api", addWords);
 
+const exerciseRoutes = require("./routes/api/exerciseRoutes");
+app.use("/exercise", exerciseRoutes);
 
-const exerciseRoutes = require('./routes/api/exerciseRoutes')
-app.use('/api', exerciseRoutes);
+const addNotebook = require("./routes/api/addNotebook");
+app.use("/add-notebook", addNotebook);
 
-const deleteWord = require('./routes/api/deleteWord')
-app.use('/delete', deleteWord);
+const deleteWord = require("./routes/api/deleteWord");
+app.use("/delete", deleteWord);
 
-const updateWord = require('./routes/api/updateWord')
-app.use('/edit', updateWord);
+const updateWord = require("./routes/api/updateWord");
+app.use("/edit", updateWord);
 
-const signUp = require('./routes/Authentication/signUp')
-app.use('/signup', signUp);
+const signUp = require("./routes/Authentication/signUp");
+app.use("/signup", signUp);
 
-const login = require('./routes/Authentication/login')
-app.use('/login', login);
-
+const login = require("./routes/Authentication/login");
+app.use("/login", login);
 
 //Handle Production
-if(process.env.NODE_ENV === "production"){
-    //Static Folder
-    app.use(express.static(__dirname+'/public'))
-    //Handle SPA
-    app.get('*', (req, res) => res.sendFile(__dirname+'/public/index.html'));
+if (process.env.NODE_ENV === "production") {
+  //Static Folder
+  app.use(express.static(__dirname + "/public"));
+  //Handle SPA
+  app.get("*", (req, res) => res.sendFile(__dirname + "/public/index.html"));
 }
 
 const port = process.env.PORT || 5000;
 
-app.listen(port, () => console.log(`Server started on port: ${port}`))
+app.listen(port, () => console.log(`Server started on port: ${port}`));

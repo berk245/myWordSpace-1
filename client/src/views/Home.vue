@@ -78,6 +78,7 @@ export default {
     top: -15vh;
     background-image: url("../assets/images/backgrounds/Stars3.png");
     background-repeat: no-repeat;
+    background-size: 100%;
   }
   &-moon {
     position: absolute;
@@ -89,20 +90,23 @@ export default {
   }
   &-spaceship {
     position: absolute;
-    width: 50px;
-    height: 54.13px;
+    width: 2rem;
+    height: 3rem;
     top: 50vh;
     left: 25vw;
     background-image: url("../assets/images/backgrounds/Spaceship.png");
+    background-repeat: no-repeat;
+    background-size: 100%;
   }
   &-earth {
     position: absolute;
-    width: 500vw;
-    height: 400vh;
-    left: -110vw;
+    width: 100vw;
+    height: 300vh;
+    left: -50vw;
     top: 43vh;
     background-image: url("../assets/images/backgrounds/EarthBigg.png");
     background-repeat: no-repeat;
+    background-size: 100%;
     z-index: 5;
   }
 

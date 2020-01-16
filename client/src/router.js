@@ -5,7 +5,7 @@ import GetStarted from "./views/GetStarted.vue";
 import AddWords from "./views/AddWords.vue";
 import Exercise from "./views/Exercise.vue";
 import Dashboard from "./views/Dashboard";
-import AllWords from "./views/AllWords";
+import Notebooks from "./views/Notebooks";
 import store from "./store";
 import jwt from "jsonwebtoken";
 
@@ -50,9 +50,9 @@ const router = new Router({
       }
     },
     {
-      path: "/edit-words",
-      name: "EditWords",
-      component: AllWords,
+      path: "/notebooks",
+      name: "Notebooks",
+      component: Notebooks,
       meta: {
         requiresAuth: true
       }

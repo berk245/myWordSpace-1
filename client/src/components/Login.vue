@@ -146,7 +146,6 @@ export default {
     background: #00918e;
     border: 2px solid #d9edf6;
     font-size: 1.2rem;
-
     text-justify: center;
   }
 

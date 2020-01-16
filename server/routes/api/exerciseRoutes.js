@@ -1,34 +1,34 @@
-const express = require('express');
-const mongodb = require('mongodb')
+const express = require("express");
+const mongodb = require("mongodb");
 const router = express.Router();
-const User = require('../../models/userModel')
+const User = require("../../models/userModel");
 
+router.post("/start", async (req, res) => {
+  const currentUser = await User.findOne({ email: req.body.user });
+  //req => word amount
 
-//Get the Words
-router.get('/', async (req,res) => {
-    const words = await loadUserData();
-    res.send(await words.find({}).toArray());
-})
+  if (currentUser.performanceData.firstTime) {
+    currentUser.performanceData.firstTime = false;
+  }
+  currentUser.performanceData.exercisesStarted += 1;
+  currentUser.performanceData.wordsSeen += req.body.wordAmount;
+  currentUser.markModified("performanceData");
+  await currentUser.save();
+  console.log(currentUser);
+  res.status(200).send(currentUser);
+});
 
-//Add New Words
+router.post("/complete", async (req, res) => {
+  const currentUser = await User.findOne({ email: req.body.user });
 
-router.post('/', async (req,res) => {
+  //req => corrects
 
-    const currentUser = await User.findOne({ email: req.body.user})
-    currentUser.words.unshift(req.body.newWord)
-    await currentUser.save()
-    res.status(200).send(currentUser.words)
+  (currentUser.performanceData.exercisesCompleted += 1),
+    (currentUser.performanceData.correctAnswers += req.body.corrects);
 
-})
-   
-
-async function loadUserData(){
-    const client = await mongodb.MongoClient.connect("mongodb+srv://newUser:123new@cluster0-oixaf.gcp.mongodb.net/admin?retryWrites=true&w=majority", {
-        useNewUrlParser: true,
-        useUnifiedTopology: true,
-    });
-
-    return client.db('deutschApp').collection('data&users')
-}
+  currentUser.markModified("performanceData");
+  await currentUser.save();
+  res.status(200).send(currentUser);
+});
 
 module.exports = router;

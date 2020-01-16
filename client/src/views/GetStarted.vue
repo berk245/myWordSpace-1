@@ -45,12 +45,9 @@ export default {
 .title {
   top: -10%;
 
-  .main-title {
-    font-size: 8rem;
-  }
   .logOrSign {
     position: absolute;
-    top: 28vh;
+    top: 25vh;
     left: 67%;
   }
 }

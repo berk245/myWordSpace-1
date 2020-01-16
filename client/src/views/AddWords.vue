@@ -1,61 +1,306 @@
 <template>
   <div class="container">
-      <h1>Add Words</h1>
-      <h2>Please enter the type and German & English spellings of the word you want to add</h2>
-      <br>
-      <form>
-          <select name="typeSelector" v-model="userInput.type" placeholder="Select Type">
-            <option value="noun"> Noun </option>
-            <option value="verb"> Verb</option>
-            <option value="adjective"> Adjective</option>
-            <option value="preposition"> Preposition</option>
-            <option value="sentence"> Sentence or Phrase</option>
+    <div class="bg">
+      <div class="bg-stars"></div>
+      <div class="bg-moon"></div>
+      <div class="bg-spaceship"></div>
+      <div class="bg-earth"></div>
+      <div class="bg-planet"></div>
+    </div>
+    <side-icons></side-icons>
+    <navbar class="navbar"></navbar>
+    <div class="box box-left">
+      <div class="goo-back" @click="takeMeOut">
+        <img src="../assets/images/BackButton.png" alt="Back Button" />
+      </div>
+      <h2 class="box-title">Add Words</h2>
+      <div class="exercise exercise-pre">
+        <p class="exercise-text">Add a new word to one of your notebooks to practice them later!</p>
+        <div class="input-boxxes">
+          <select
+            class="inputBox"
+            name="Notebook Selector"
+            id="Notebook Selector"
+            v-model="newWord.notebook"
+          >
+            <option value disabled>Choose your Notebook</option>
+            <option value="all">All Noteboks</option>
+            <option
+              v-for="(book , bookName) in user.notebooks"
+              :key="bookName"
+              :value="bookName"
+            >{{bookName}}</option>
           </select>
-          <br>
-          <input type="text" v-model="userInput.german" placeholder="German Word/ mit Artikel">
-          <br>
-          <input type="text" v-model="userInput.english" placeholder="English Translation">
-          <br>
-          
-      </form>
-      <input type="submit" @click="addMe">
-      <p v-if="addSuccess"> {{ user.words[0].german}} added to database succesfuly.</p>
-      <p v-if="user.username == 'guest'"> The Guest account wordlist will be resetted frequently</p>
+          <input
+            class="inputBox"
+            type="text"
+            placeholder="Original Word"
+            v-model="newWord.original"
+          />
+          <input
+            class="inputBox"
+            type="text"
+            placeholder="Translation"
+            v-model="newWord.translation"
+          />
+          <select class="inputBox" name="typeSelector" v-model="newWord.type">
+            <option value disabled selected hidden>Choose your Type</option>
+
+            <option value="noun">Noun</option>
+            <option value="verb">Verb</option>
+            <option value="sentence">Sentence or Phrase</option>
+            <option value="adjective">Adjective</option>
+            <option value="preposition">Preposition</option>
+            <option value="other">Other</option>
+          </select>
+        </div>
+        <p class="feedbackMessage">{{feedbackMessage}}</p>
+      </div>
+
+      <button class="main-button" @click="addNewWord">Add Word</button>
+    </div>
   </div>
 </template>
 
 <script>
-import {mapState, mapActions} from 'vuex'
+import navbar from "../components/Navbar";
+import sideIcons from "../components/SideIcons";
+import router from "vue-router";
+import { mapState, mapActions } from "vuex";
 export default {
-    name:'addWords',
-    data(){
-        return{
-            userInput:{
-                german:'',
-                english: '',
-                type:''
-            },
-            addSuccess: false,
-        }
-    },
-    methods:{
-        ...mapActions(['addWords']),
-        addMe(){
-            this.addWords(this.userInput);
-            var self = this;
-            setTimeout(() => { self.addSuccess = true }, 1000)      
-            setTimeout(() => { self.addSuccess = false }, 3000)  
-        }
+  data() {
+    return {
+      newWord: {
+        notebook: "",
+        original: "",
+        translation: "",
+        type: ""
+      },
 
+      feedbackMessage: ""
+    };
+  },
+  components: {
+    navbar,
+    sideIcons
+  },
+  methods: {
+    ...mapActions(["addWords"]),
+    addNewWord() {
+      if (
+        this.newWord.notebook &&
+        this.newWord.original &&
+        this.newWord.translation &&
+        this.newWord.type
+      ) {
+        this.addWords(this.newWord);
+        var self = this;
+        setTimeout(() => {
+          self.feedbackMessage =
+            self.newWord.original + " is added to " + this.newWord.notebook;
+        }, 1000);
+        setTimeout(() => {
+          self.feedbackMessage = "";
+        }, 3000);
+      } else {
+        alert("Please fill all the areas to add the word.");
+      }
     },
-    computed:{
-        ...mapState(['user','functionsStatus'])
+    resetFields() {
+      this.onExercise = false;
+      this.resultBox = false;
+      this.reqExercise.notebook = "";
+      this.reqExercise.amount = "";
+      this.reqExercise.type = "";
+      this.currentExercise.exerciseWords = [];
+      this.currentExercise.userAnswers = [];
+      this.currentExercise.wrongAnswers = [];
+    },
+    takeMeOut() {
+      this.$router.push("/dashboard");
     }
-
-
-}
+  },
+  computed: {
+    ...mapState(["user", "requestStatus"])
+  }
+};
 </script>
 
-<style>
 
+<style scoped lang="scss">
+.bg {
+  width: 100%;
+  height: auto;
+  position: relative;
+  &-stars {
+    position: absolute;
+    width: 964px;
+    height: 784px;
+    left: 60vw;
+    top: -15vh;
+    background-image: url("../assets/images/backgrounds/Stars3.png");
+    background-repeat: no-repeat;
+  }
+  &-moon {
+    position: absolute;
+    width: 78px;
+    height: 73px;
+    top: 20vh;
+    left: 35vw;
+    background-image: url("../assets/images/backgrounds/Moon.png");
+    background-size: 100%;
+    background-repeat: no-repeat;
+  }
+  &-spaceship {
+    position: absolute;
+    width: 30px;
+    height: 34.13px;
+    top: 63vh;
+    left: 26vw;
+    background-image: url("../assets/images/backgrounds/Spaceship.png");
+    background-size: 100%;
+  }
+  &-earth {
+    position: absolute;
+    width: 550px;
+    height: 550px;
+    left: 22vw;
+    top: 32h;
+    background-image: url("../assets/images/backgrounds/EarthBigg.png");
+    background-repeat: no-repeat;
+    background-size: 100%;
+    z-index: 5;
+  }
+
+  &-planet {
+    position: absolute;
+    width: 226px;
+    height: 129px;
+    left: 90vw;
+    top: 85vh;
+    background-image: url("../assets/images/backgrounds/Planet.png");
+  }
+}
+.box {
+  z-index: 7;
+  background: rgba(255, 255, 255, 0.95);
+  border: 2px solid #00e7ff;
+  box-sizing: border-box;
+  border-radius: 10px;
+  &-left {
+    position: absolute;
+    left: 10%;
+    top: 10vh;
+    height: 85vh;
+    width: 20vw;
+    display: grid;
+    grid-template-areas:
+      "title title title"
+      "ex ex ex"
+      "ex ex ex"
+      "ex ex ex"
+      "ex ex ex"
+      "but but but";
+    .goo-back {
+      position: fixed;
+      top: 0.5%;
+      left: 2.5%;
+      z-index: 30;
+
+      &:hover {
+        opacity: 0.8;
+      }
+      img {
+        width: 1.8rem;
+        height: 1.8rem;
+      }
+    }
+    .box-title {
+      grid-area: title;
+      position: relative;
+      font-family: Dosis;
+      font-size: 2rem;
+      top: 2.5vh;
+      left: 7.5%;
+    }
+    .exercise {
+      position: relative;
+      top: 0rem;
+      padding: 1.5rem;
+      grid-area: ex;
+      font-family: Raleway;
+      font-size: 1.1rem;
+
+      &-text {
+        text-align: justify;
+      }
+      &-pre {
+        text-align: center;
+        .input-boxxes {
+          margin-top: 2rem;
+          display: grid;
+          left: 2.5%;
+          grid-template-columns: 100%;
+          grid-auto-rows: 30%;
+          grid-gap: 0.7rem;
+          .inputBox {
+            z-index: 6;
+            width: 100%;
+            height: 3rem;
+            background: #ffffff;
+            border: 2px solid #ffce00;
+            box-sizing: border-box;
+            border-radius: 10px;
+            font-family: Raleway;
+            color: black;
+            font-weight: bold;
+            font-size: 0.8rem;
+            padding: 0.3rem;
+            &:focus {
+              outline: none;
+              &::placeholder {
+                color: white;
+              }
+            }
+          }
+        }
+        ::placeholder {
+          color: black;
+        }
+        .feedbackMessage {
+          position: relative;
+          top: 5rem;
+          font-family: Raleway;
+          font-size: 0.9rem;
+          font-weight: 600;
+        }
+      }
+    }
+    .main-button {
+      grid-area: but;
+      border-radius: 10px;
+      bottom: 3vh;
+      left: 7.5%;
+      cursor: pointer;
+      z-index: 6;
+      position: absolute;
+      width: 85%;
+      height: 3.3rem;
+      background-color: #000c36;
+      border: 2px solid #d9edf6;
+      box-sizing: border-box;
+      border-radius: 10px;
+      font-family: Raleway;
+      color: #d9edf6;
+      font-style: normal;
+      font-weight: bold;
+      font-size: 1.4rem;
+      padding: 0.2rem;
+      text-align: center;
+      &:hover {
+        border: #ffce00 solid 2px;
+      }
+    }
+  }
+}
 </style>

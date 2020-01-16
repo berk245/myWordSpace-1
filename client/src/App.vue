@@ -6,6 +6,8 @@
 <script>
 import store from "./store";
 import { mapState, mapActions } from "vuex";
+import * as d3 from "d3";
+
 export default {
   computed: {
     ...mapState(["user"])
@@ -25,7 +27,7 @@ export default {
   //position: relative;
   overflow: hidden;
   width: 100vw;
-  height: 100vh;
+  min-height: 100vh;
 
   background: radial-gradient(
     100% 270.84% at 100% 0%,

@@ -1,14 +1,5 @@
 <template>
   <div class="menu">
-    <router-link to="/dashboard" class="menu-item">
-      <p class="r-link">Dashboard</p>
-    </router-link>
-    <router-link to="/execise" class="menu-item">
-      <p class="r-link">Exercise</p>
-    </router-link>
-    <router-link to="/edit-words" class="menu-item">
-      <p class="r-link">Notebooks</p>
-    </router-link>
     <router-link to class="menu-item">
       <p class="r-link">Profile</p>
     </router-link>
@@ -51,7 +42,7 @@ export default {
 <style lang="scss">
 .menu {
   width: 35vh;
-  height: 63vh;
+  height: 33vh;
   float: right;
   margin-top: 2rem;
   background-color: #000103;

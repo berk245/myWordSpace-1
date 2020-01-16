@@ -34,6 +34,7 @@ router.post("/", async (req, res) => {
     currentDate.getDate() +
     "/" +
     currentDate.getMonth() +
+    1 +
     "/" +
     currentDate.getFullYear() +
     " at " +
@@ -44,16 +45,19 @@ router.post("/", async (req, res) => {
 
   await registeredUser.save();
 
-  if (registeredUser.logins.length > 1) {
-    var lastActive = registeredUser.logins[1];
-  }
-  let curUser = {
-    username: registeredUser.name,
-    words: registeredUser.words,
-    email: registeredUser.email,
-    lastLogin: lastActive
-  };
-  res.send(curUser);
+  // if (registeredUser.logins.length > 1) {
+  //   var lastActive = registeredUser.logins[1];
+  // }
+  // console.log(registeredUser);
+  // let curUser = {
+  //   username: registeredUser.name,
+  //   userNotebooks: registeredUser.notebooks,
+  //   recentWords: registeredUser.recentWords,
+  //   email: registeredUser.email,
+  //   lastLogin: lastActive
+  // };
+  res.send(registeredUser);
+  console.log(registeredUser);
 });
 
 module.exports = router;

@@ -1,76 +1,62 @@
 <template>
   <div class="container">
-    <navbar></navbar>
+    <navbar class="nav-dash"></navbar>
     <div class="bg">
       <div class="bg-stars"></div>
       <div class="bg-moon"></div>
       <div class="bg-planet"></div>
       <div class="title"></div>
     </div>
+    <side-icons></side-icons>
     <div class="box box-top">
       <div v-if="user.firstTime">
-        <h2 class="text title-welcome">Welcome aboard {{ user.username }}!</h2>
+        <h2 class="text title-welcome">Welcome aboard {{ user.name }}!</h2>
         <p class="text welcome-text">
-          This is your dashboard. You can create ‘Wordbooks’, add
-          new words and practice the words you have added. You
-          can use the button on with to navigate in your space anytime!
+          This is your dashboard. You can create ‘Wordbooks’, add new words and
+          practice the words you have added. You can use the button on with to
+          navigate in your space anytime!
         </p>
       </div>
       <div v-else>
-        <h2 class="text title-text">Welcome back {{ user.username }}!</h2>
-        <p
-          class="text box-text"
-        >Last time you were here was {{ user.lastLogin }}. Create notebooks, add words and practice. Are you ready to get to work?</p>
+        <h2 class="text title-text">Welcome back {{ user.name }}!</h2>
+        <p class="text box-text">
+          Last time you were here was {{ user.logins[1]}}. Create notebooks,
+          add words and practice. Are you ready to get to work?
+        </p>
       </div>
     </div>
     <div class="box box-exercise">
-      <div class="chart">This is the Chart Section</div>
-      <div class="stats">Here are some statistics</div>
-      <div class="goPractice">
-        <button class="p-button">Exercise!</button>
+      <h2 class="title2 title-text">Your Performance</h2>
+      <div v-if="user.performanceData.firstTime">
+        <p class="box-text text">Here you'll find your statistics when you start exercising :)</p>
+      </div>
+      <div v-if="!user.performanceData.firstTime" class="chart">
+        <p class="text box-text">Total Questions Answered: {{user.performanceData.wordsSeen}}</p>
+        <p class="text box-text">Performance Chart:</p>
+        <chart></chart>
+      </div>
+      <div v-if="!user.performanceData.firstTime" class="stats">
+        <p class="text box-text">Exercises Started: {{user.performanceData.exercisesStarted}}</p>
+        <p class="text box-text">Exercises Completed: {{user.performanceData.exercisesCompleted}}</p>
+        <p class="text box-text">Daily Exercises Amount Chart Weekly / Monthly</p>
+        <p class="text box-text">Problematic Words</p>
       </div>
     </div>
-    <div class="box box-books"></div>
-    <div class="box box-words"></div>
-  </div>
 
-  <!-- <div>
-    <div>
-      <div v-if="firstTime">
-        <h2>Welcome {{user.username}}</h2>
-        <br />
-        <h3>It's your first time here! How exciting</h3>
-        <br />
-        <h4>You can start by adding new words to your database to practice them later. Viel Erfolg!!</h4>
+    <div class="box box-words">
+      <h2 class="title3 title-text">Recent Words</h2>
+      <div v-if="user.recentWords" class="list">
+        <div class="list-row" v-for="word in user.recentWords" :key="word.x">
+          <p>{{word.original}}</p>
+          <p>{{word.translation}}</p>
+          <p>{{word.type}}</p>
+        </div>
       </div>
-      <div v-if="user.username == 'guest'">
-        <h2>Welcome {{user.username}}</h2>
-        <br />
-        <h3>You can add words / start exercising / see & edit the words you have added!</h3>
-        <br />
-        <h4>Are you ready to practice?</h4>
-      </div>
-      <div v-else>
-        <h2>Welcome {{user.username}}</h2>
-        <br />
-        <h3>Nice to have you back here! You can add new words / start exercising / see the words you have added!</h3>
-        <br />
-        <h4>Are you ready to practice?</h4>
+      <div class="list" v-else>
+        <p>Add some words to see the recent words here</p>
       </div>
     </div>
-    <div id="nav">
-      <router-link to="/add-words">
-        <img class="dashImg" :src="addImage" alt="Add Words" />
-      </router-link>
-      <router-link to="/exercise">
-        <img class="dashImg" :src="practiceImage" alt="Add Words" />
-      </router-link>
-      <router-link to="/edit-words">
-        <img class="dashImg" :src="editImage" alt="Edit Words" />
-      </router-link>
-    </div>
-    <button @click="logOut">Log Out</button>
-  </div>-->
+  </div>
 </template>
 
 <script>
@@ -79,6 +65,8 @@ import router from "../router";
 import Login from "../components/Login";
 import Signup from "../components/SignUp";
 import Navbar from "../components/Navbar";
+import Chart from "../components/Chart";
+import SideIcons from "../components/SideIcons";
 
 export default {
   data() {
@@ -87,7 +75,9 @@ export default {
   components: {
     Login,
     Signup,
-    Navbar
+    Navbar,
+    Chart,
+    SideIcons
   },
   methods: {
     ...mapActions(["login", "signup"])
@@ -103,11 +93,18 @@ export default {
   }
 };
 </script>
+
+
+
 <style scoped lang="scss">
+.nav-dash[data-v-22ba47ca] {
+  .go-back {
+    visibility: hidden;
+  }
+}
 .bg {
   &-moon {
-    top: 5rem;
-    left: 2vw;
+    visibility: hidden;
   }
 }
 .box {
@@ -115,66 +112,83 @@ export default {
   border: 2px solid #00e7ff;
   box-sizing: border-box;
   border-radius: 10px;
-  left: 13%;
+  left: 10%;
   &-top {
     position: relative;
-    top: 12vh;
-    width: 73%;
+    top: 10vh;
+    width: 85%;
     height: 15vh;
   }
   &-exercise {
     position: relative;
-    width: 45%;
-    height: 35vh;
-    top: 15vh;
+    width: 57%;
+    height: 67vh;
+    top: 13vh;
     display: grid;
     grid-template-areas:
+      "title2 title2  emp emp"
       "chart chart stats stats"
       "chart chart stats stats"
       "chart chart stats stats"
       "chart chart stats stats"
       "chart chart stats stats"
-      "chart chart stats stats"
-      "chart chart stats stats"
-      "goPractice goPractice goPractice goPractice";
+      "chart chart stats stats";
+    .title2 {
+      margin-left: 5%;
+      grid-area: title2;
+    }
     .chart {
       grid-area: chart;
     }
     .stats {
       grid-area: stats;
     }
-    .goPractice {
-      grid-area: goPractice;
-      top: 60%;
-      left: 80%;
-      .p-button {
-        width: 100%;
-        height: 100%;
-        background-color: #000103;
-        border-radius: 0 0 10px 10px;
-        border: solid 1px #00e7ff;
-        font-family: Dosis;
-        font-size: 1.4rem;
-        color: white;
-        &:hover {
-          background-color: #ffce00;
-        }
-      }
-    }
-  }
-
-  &-books {
-    position: relative;
-    width: 45%;
-    height: 25vh;
-    top: 18vh;
   }
   &-words {
     position: absolute;
-    width: 26.5vw;
-    height: 63vh;
-    top: 30vh;
-    left: 59.5%;
+    width: 27vw;
+    height: 67vh;
+    top: 28vh;
+    left: 68%;
+    display: grid;
+    grid-template-areas:
+      "title title emp emp"
+      "list list list list";
+    grid-template-rows: 15% 85%;
+    .title3 {
+      font-family: Dosis;
+      grid-area: title;
+      position: relative;
+      left: 6%;
+    }
+    .list {
+      position: relative;
+      top: -2.5%;
+      left: -2.5%;
+      grid-area: list;
+      width: 90%;
+      height: 90%;
+      border-radius: 10px;
+      font-family: Raleway;
+      display: grid;
+      grid-template-columns: 100%;
+      grid-auto-rows: auto;
+      grid-gap: 1.3rem;
+
+      .list-row {
+        display: grid;
+        grid-template-columns: 45% 45% 10%;
+        text-align: center;
+        font-size: 1rem;
+        border-bottom: solid 0.3px rgba(15, 15, 15, 0.8);
+        .type {
+          margin-top: 0.4rem;
+          font-size: 0.6rem;
+          font-weight: 700;
+          text-transform: uppercase;
+        }
+      }
+    }
   }
 }
 

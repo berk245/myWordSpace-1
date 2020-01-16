@@ -14,11 +14,15 @@ export default new Vuex.Store({
     componentSignup: false,
     token: sessionStorage.getItem("auth-token") || "",
     user: JSON.parse(sessionStorage.getItem("user")) || {
-      username: "",
+      name: "",
       email: "",
       firstTime: false,
       lastLogin: "",
-      words: []
+      logins: [],
+      notebooks: {},
+      totalWordCount: 0,
+      recentWords: [],
+      performanceData: {}
     } // _id & email & name & password
   },
   getters: {
@@ -32,10 +36,13 @@ export default new Vuex.Store({
     auth_success(state, { header, user }) {
       (state.status = "Logged In"),
         (state.token = header.token),
-        (state.user.username = user.username),
+        (state.user.name = user.name),
         (state.user.email = user.email),
-        (state.user.words = user.words),
-        (state.user.lastLogin = user.lastLogin);
+        (state.user.notebooks = user.notebooks),
+        (state.user.totalWordCount = user.totalWordCount),
+        (state.user.recentWords = user.recentWords),
+        (state.user.logins = user.logins),
+        (state.user.performanceData = user.performanceData);
       sessionStorage.setItem("auth-token", header.token);
       sessionStorage.setItem("user", JSON.stringify(user));
       sessionStorage.setItem("user-status", state.status);
@@ -69,19 +76,39 @@ export default new Vuex.Store({
         (state.user.words = []);
       state.user.email = "";
     },
-    add_word_success(state, updatedWords) {
-      state.user.words = updatedWords.data;
+    add_word_success(state, updatedUser) {
+      state.user.notebooks = updatedUser.data.notebooks;
+      state.user.recentWords = updatedUser.data.recentWords;
+      state.user.totalWordCount = updatedUser.data.totalWordCount;
+      sessionStorage.setItem("user", JSON.stringify(updatedUser.data));
     },
-    delete_success(state, arr) {
-      state.user.words = arr.data;
+    delete_success(state, updatedUser) {
+      state.user.notebooks = updatedUser.data.notebooks;
+      state.user.totalWordCount = updatedUser.data.totalWordCount;
+      state.user.recentWords = updatedUser.data.recentWords;
+      sessionStorage.setItem("user", JSON.stringify(updatedUser.data));
     },
-    update_success(state, resp) {
-      state.user.words = resp.data;
+    update_success(state, updatedUser) {
+      state.user.notebooks = updatedUser.data.notebooks;
+      state.user.recentWords = updatedUser.data.recentWords;
+      sessionStorage.setItem("user", JSON.stringify(updatedUser.data));
     },
     component_signup(state) {
       state.componentSignup = !state.componentSignup;
       state.loginError = false;
       state.signUpError = false;
+    },
+    add_notebook_success(state, updatedUser) {
+      state.user.notebooks = updatedUser.data.notebooks;
+      sessionStorage.setItem("user", JSON.stringify(updatedUser.data));
+    },
+    exercise_started(state, updatedUser) {
+      state.user.performanceData = updatedUser.data.performanceData;
+      sessionStorage.setItem("user", JSON.stringify(updatedUser.data));
+    },
+    exercise_done(state, updatedUser) {
+      state.user.performanceData = updatedUser.data.performanceData;
+      sessionStorage.setItem("user", JSON.stringify(updatedUser.data));
     }
   },
   actions: {
@@ -97,6 +124,7 @@ export default new Vuex.Store({
             if (resp.status == 200) {
               const user = resp.data;
               const header = resp.headers;
+              console.log(resp.data);
               commit("auth_success", { header, user });
               router.push("/dashboard");
               resolve(resp);
@@ -152,40 +180,80 @@ export default new Vuex.Store({
       router.push("/");
       commit("logout_success");
     },
+    addNotebook({ commit, state }, newNotebook) {
+      return new Promise((resolve, reject) => {
+        const user = state.user.email;
+        console.log(newNotebook);
+        axios
+          .post("/add-notebook", { newNotebook, user })
+          .then(resp => {
+            console.log(resp);
+            commit("add_notebook_success", resp); //response is updated user object
+            resolve();
+          })
+          .catch(err => reject(err));
+      });
+    },
     addWords({ commit, state }, newWord) {
       return new Promise((resolve, reject) => {
         const user = state.user.email;
         axios
           .post("/api", { newWord, user })
           .then(resp => {
-            console.log(resp); //response is the updated word array
+            console.log(resp); //response is the updated user
             commit("add_word_success", resp);
             resolve();
           })
           .catch(err => reject());
       });
     },
-    deleteWord({ commit, state }, index) {
+    deleteWord({ commit, state }, data) {
+      //data = notebook, type, index
       return new Promise((res, rej) => {
         const user = state.user.email;
         axios
-          .post(`/delete`, { user, index })
+          .post(`/delete`, { user, data })
           .then(resp => {
             console.log(resp);
-            commit("delete_success", resp); //updated word array
+            commit("delete_success", resp); //updated user
             res();
           })
           .catch(err => rej(err));
       });
     },
-    updateWord({ commit, state }, { index, newWord }) {
+    updateWord({ commit, state }, updateData) {
       return new Promise((res, rej) => {
         const user = state.user.email;
         axios
-          .post("/edit", { user, index, newWord })
+          .post("/edit", { user, updateData })
           .then(resp => {
             console.log(resp);
-            commit("update_success", resp); //updated word array
+            commit("update_success", resp); //updated user
+            res();
+          })
+          .catch(err => rej(err));
+      });
+    },
+    exerciseStart({ commit, state }, wordAmount) {
+      return new Promise((res, rej) => {
+        const user = state.user.email;
+        axios
+          .post("/exercise/start", { user, wordAmount: parseInt(wordAmount) })
+          .then(resp => {
+            //console.log(resp);
+            commit("exercise_started", resp);
+            res();
+          })
+          .catch(err => rej(err));
+      });
+    },
+    exerciseDone({ commit, state }, corrects) {
+      return new Promise((res, rej) => {
+        const user = state.user.email;
+        axios
+          .post("/exercise/complete", { user, corrects: parseInt(corrects) })
+          .then(resp => {
+            commit("exercise_done", resp);
             res();
           })
           .catch(err => rej(err));
